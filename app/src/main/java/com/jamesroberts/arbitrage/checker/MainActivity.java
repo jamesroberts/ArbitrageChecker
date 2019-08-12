@@ -1,13 +1,22 @@
 package com.jamesroberts.arbitrage.checker;
 
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +27,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = findViewById(R.id.fab);
+        final EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
+        Button button = (Button) findViewById(R.id.btnSubmit);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                try {
+                    EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
+                    float rate = Float.parseFloat(exchangeRate.getText().toString());
+                    Arbitrage arb = new Arbitrage();
+                    ArrayList result = arb.getData(rate);
+                    String zar = result.get(0).toString();
+                    Toast.makeText(getApplicationContext(), ("The profit is R: " + zar), Toast.LENGTH_LONG).show();
+
+                }catch (Exception error){
+                    System.out.println(error.toString());
+                    System.out.println(error.getStackTrace());
+                }
+            }
+        });
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
