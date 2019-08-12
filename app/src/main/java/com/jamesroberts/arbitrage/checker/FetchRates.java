@@ -17,10 +17,8 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         try {
             prices.add(kraken_price());
             prices.add(luno_price());
-
-
         } catch (Exception e) {
-
+            System.out.println("There was a problem fetching the rates");
         }
         return prices;
     }
@@ -36,7 +34,6 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         // optional default is GET
         con.setRequestMethod("GET");
-        //add request header
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
@@ -47,18 +44,17 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         }
         in.close();
         //print in String
-        System.out.println(response.toString());
+
         JSONObject myResponse = new JSONObject(response.toString());
-        System.out.println(myResponse.toString());
+
         JSONObject result = new JSONObject(myResponse.getString("result"));
-        System.out.println(result.toString());
+
         JSONObject pair = new JSONObject(result.getString("XXBTZEUR"));
-        System.out.println(pair.toString());
+
         JSONArray list = pair.getJSONArray("a");
-        System.out.println(list.toString());
+
         float price = Float.parseFloat((String)list.get(0));
         return price;
-        //return 10000.00f;
     }
 
     private float luno_price() throws Exception {
@@ -75,13 +71,13 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
-        in.close();
+        in.close();3
         //print in String
         System.out.println(response.toString());
         //Read JSON response and print
         JSONObject myResponse = new JSONObject(response.toString());
         float price = Float.parseFloat(myResponse.getString("bid"));
         return price;
-        //return 180000.00f;
+
     }
 }

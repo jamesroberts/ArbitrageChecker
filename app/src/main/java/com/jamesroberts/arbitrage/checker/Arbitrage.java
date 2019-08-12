@@ -68,7 +68,22 @@ public class Arbitrage {
 
         zar -= get_absa_fees();
         ArrayList data = new ArrayList();
-        data.add(zar);
+        //data.add(zar);
+        // Output data
+        data.add(String.format ("%.2f", kraken));
+        data.add(String.format ("%.2f", exchange_rate));
+        data.add(String.format ("%.2f", luno));
+        data.add(String.format ("%.2f", percentage));
+        float percent_gain = (((zar/getCapital())-1)*100);
+        data.add(String.format ("%.2f", percent_gain));
+        if (percent_gain >= 3)
+            data.add("GOOD");
+        else if (percent_gain >= 2)
+            data.add("OKAY");
+        else
+            data.add("BAD");
+        float profit = zar - getCapital();
+        data.add(String.format ("%.2f", profit));
         return data;
     }
 }
