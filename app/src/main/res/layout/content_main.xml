@@ -9,36 +9,121 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
+        android:id="@+id/lblLunoPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:text="Luno price (ZAR/BTC) :"
+        app:layout_constraintBottom_toTopOf="@+id/lblArbPerc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblExchange_rate" />
 
     <Button
         android:id="@+id/btnSubmit"
-        android:layout_width="109dp"
-        android:layout_height="51dp"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="28dp"
-        android:text="Button"
+        android:layout_marginEnd="32dp"
+        android:text="Check"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etExchangeRate"
-        android:layout_width="218dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="48dp"
+        android:layout_width="234dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="13dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/btnSubmit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblKraken_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginBottom="9dp"
+        android:text="Kraken price (EUR/BTC) :"
+        app:layout_constraintBottom_toTopOf="@+id/lblExchange_rate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etExchangeRate" />
+
+    <TextView
+        android:id="@+id/lblExchange_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:text="EUR to ZAR conversion rate:"
+        app:layout_constraintBottom_toTopOf="@+id/lblLunoPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblKraken_price" />
+
+    <TextView
+        android:id="@+id/lblArbPerc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:text="Arbitrage Percentage :"
+        app:layout_constraintBottom_toTopOf="@+id/lblGain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblLunoPrice" />
+
+    <TextView
+        android:id="@+id/lblProfit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="18dp"
+        android:text="Estimated Profit on R50,000: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblGain" />
+
+    <TextView
+        android:id="@+id/lblGain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:text="Gain after fees :"
+        app:layout_constraintBottom_toTopOf="@+id/lblProfit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblArbPerc" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="24dp"
+        android:text="Novo Exchange Rate (EUR/ZAR)"
+        app:layout_constraintEnd_toStartOf="@+id/btnSubmit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginBottom="18dp"
+        android:text="Arbitrage Details"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/lblKraken_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etExchangeRate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

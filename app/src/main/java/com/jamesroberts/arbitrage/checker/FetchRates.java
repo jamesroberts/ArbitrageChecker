@@ -71,7 +71,7 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
-        in.close();3
+        in.close();
         //print in String
         System.out.println(response.toString());
         //Read JSON response and print

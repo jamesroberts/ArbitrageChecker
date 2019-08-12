@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -38,23 +39,32 @@ public class MainActivity extends AppCompatActivity {
                     float rate = Float.parseFloat(exchangeRate.getText().toString());
                     Arbitrage arb = new Arbitrage();
                     ArrayList result = arb.getData(rate);
-                    String zar = result.get(0).toString();
-                    Toast.makeText(getApplicationContext(), ("The profit is R: " + zar), Toast.LENGTH_LONG).show();
+                    String kraken = result.get(0).toString();
+                    String exchange_rate = result.get(1).toString();
+                    String luno = result.get(2).toString();
+                    String arb_percent = result.get(3).toString();
+                    String gain = result.get(4).toString();
+                    String estimation = result.get(5).toString();
+                    String profit = result.get(6).toString();
+
+                    TextView lblKraken = (TextView) findViewById(R.id.lblKraken_price);
+                    lblKraken.setText("Kraken price (EUR/BTC) :          € " + kraken);
+                    TextView lblRate = (TextView) findViewById(R.id.lblExchange_rate);
+                    lblRate.setText(  "EUR to ZAR exchange rate:      R " + exchange_rate);
+                    TextView lblLuno = (TextView) findViewById(R.id.lblLunoPrice);
+                    lblLuno.setText(  "Luno price (ZAR/BTC) :             R " + luno);
+                    TextView lblPerc = (TextView) findViewById(R.id.lblArbPerc);
+                    lblPerc.setText(  "Arbitrage Percentage :              " + arb_percent + " %");
+                    TextView lblGain = (TextView) findViewById(R.id.lblGain);
+                    lblGain.setText(  "Percentage Gain after fees :    " + gain + " %");
+                    TextView lblProfit = (TextView) findViewById(R.id.lblProfit);
+                    lblProfit.setText("Estimated Profit on R50,000:   R " + profit);
 
                 }catch (Exception error){
                     System.out.println(error.toString());
                     System.out.println(error.getStackTrace());
+                    Toast.makeText(MainActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
     }
