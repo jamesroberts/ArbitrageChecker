@@ -14,20 +14,24 @@ import java.util.ArrayList;
 
 public class Arbitrage {
 
+    public float CAPITAL;
     public AsyncTask<String, Void, ArrayList> task;
     public ArrayList prices;
-    public ArrayList getData(float exchangeRate) throws Exception{
+    public ArrayList getData(float exchangeRate, float CAPITAL) throws Exception{
+        this.CAPITAL = CAPITAL;
         task = new FetchRates().execute();
         prices = task.get();
         return get_arb_info(exchangeRate);
     }
 
     private float getCapital() {
-        return 50000.00f;
+        return CAPITAL;
     }
 
     private float get_absa_fees() {
-        return 376.00f;
+        if (CAPITAL == 50000)
+            return 376.00f;
+        else return 614.00f;
     }
 
     private float kraken_price() throws Exception {

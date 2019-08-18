@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    public float CAPITAL = 50000.00f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,17 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
         Button button = (Button) findViewById(R.id.btnSubmit);
+
+        final Switch switchCapital = (Switch) findViewById(R.id.switchCapital);
+        switchCapital.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    CAPITAL = 100000.00f;
+                } else
+                    CAPITAL = 50000.00f;
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                 EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
                                 float rate = Float.parseFloat(exchangeRate.getText().toString());
                                 Arbitrage arb = new Arbitrage();
-                                ArrayList result = arb.getData(rate);
+                                ArrayList result = arb.getData(rate, CAPITAL);
                                 lblChecking.setText(" ");
                                 String kraken = result.get(0).toString();
                                 String exchange_rate = result.get(1).toString();
@@ -64,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                 TextView lblGain = (TextView) findViewById(R.id.lblGain);
                                 lblGain.setText("Percentage Gain after fees :    " + gain + " %");
                                 TextView lblProfit = (TextView) findViewById(R.id.lblProfit);
-                                lblProfit.setText("Estimated Profit on R50,000:   R " + profit);
+                                lblProfit.setText("Estimated Profit after fees:     R " + profit);
                             } catch (Exception error){
                                 Toast.makeText(MainActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                             }
