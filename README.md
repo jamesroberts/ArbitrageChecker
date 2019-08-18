@@ -4,6 +4,8 @@ An android app that check the bitcoin arbitrage rates between the Luno and Krake
 This app presents an interface that allows a user to input a EUR/ZAR exchange rate and shows
 the various arbitrage details on screen.
 
+Update: Allow the user to select a capital amount of either R50,000 or R100,000
+
 The details include:
 - The kraken XBT/EUR price (Fetched using the Kraken API)
 - The exchange rate that the user has entered
