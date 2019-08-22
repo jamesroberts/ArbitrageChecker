@@ -31,7 +31,7 @@ public class Arbitrage {
     private float get_absa_fees() {
         if (CAPITAL == 50000)
             return 376.00f;
-        else return 614.00f;
+        else return 652.00f;
     }
 
     private float kraken_price() throws Exception {
