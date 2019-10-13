@@ -15,8 +15,9 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
     protected ArrayList doInBackground(String... urls) {
         ArrayList prices = new ArrayList();
         try {
-            prices.add(kraken_price());
-            prices.add(luno_price());
+            prices.add(krakenPrice());
+            prices.add(lunoPrice());
+            prices.add(valrPrice());
         } catch (Exception e) {
             System.out.println("There was a problem fetching the rates");
         }
@@ -28,7 +29,7 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         // TODO: do something with the feed
     }
 
-    private float kraken_price() throws Exception {
+    private float krakenPrice() throws Exception {
         String url = "https://api.kraken.com/0/public/Ticker?pair=XBTEUR";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -43,7 +44,6 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
             response.append(inputLine);
         }
         in.close();
-        //print in String
 
         JSONObject myResponse = new JSONObject(response.toString());
 
@@ -57,7 +57,7 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
         return price;
     }
 
-    private float luno_price() throws Exception {
+    private float lunoPrice() throws Exception {
         String url = "https://api.mybitx.com/api/1/ticker?pair=XBTZAR";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -72,12 +72,30 @@ public class FetchRates extends AsyncTask<String, Void, ArrayList> {
             response.append(inputLine);
         }
         in.close();
-        //print in String
-        System.out.println(response.toString());
-        //Read JSON response and print
+
         JSONObject myResponse = new JSONObject(response.toString());
         float price = Float.parseFloat(myResponse.getString("bid"));
         return price;
+    }
 
+    private float valrPrice() throws Exception {
+        String url = "https://api.valr.com/v1/public/BTCZAR/marketsummary";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        // optional default is GET
+        con.setRequestMethod("GET");
+        //add request header
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        JSONObject myResponse = new JSONObject(response.toString());
+        float price = Float.parseFloat(myResponse.getString("bidPrice"));
+        return price;
     }
 }

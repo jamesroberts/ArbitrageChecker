@@ -14,81 +14,126 @@ import java.util.ArrayList;
 
 public class Arbitrage {
 
-    public float CAPITAL;
-    public AsyncTask<String, Void, ArrayList> task;
-    public ArrayList prices;
-    public ArrayList getData(float exchangeRate, float CAPITAL) throws Exception{
-        this.CAPITAL = CAPITAL;
-        task = new FetchRates().execute();
-        prices = task.get();
-        return get_arb_info(exchangeRate);
+    float CAPITAL;
+    float RATE;
+    float FEES;
+
+    float KRAKEN_PRICE;
+    float LUNO_PRICE;
+    float VALR_PRICE;
+
+    public Arbitrage() {
+        this.CAPITAL = 0f;
+        this.RATE = 0f;
+        this.FEES = 0f;
+        this.KRAKEN_PRICE = 0f;
+        this.LUNO_PRICE = 0f;
+        this.VALR_PRICE = 0f;
     }
 
-    private float getCapital() {
+    // Getters
+    public float getCapital() {
         return CAPITAL;
     }
 
-    private float get_absa_fees() {
-        if (CAPITAL == 50000)
-            return 376.00f;
-        else return 652.00f;
+    public float getRate() {
+        return RATE;
     }
 
-    private float kraken_price() throws Exception {
-        return (float) prices.get(0);
+    public float getFees() {
+        return FEES;
     }
 
-    private float luno_price() throws Exception {
-        return (float) prices.get(1);
+    public float getKrakenPrice() {
+        return KRAKEN_PRICE;
     }
 
-    private ArrayList get_arb_info(float exchange_rate) throws Exception{
-        float kraken = kraken_price();
-        float luno = luno_price();
+    public float getLunoPrice() {
+        return LUNO_PRICE;
+    }
 
-        float percentage = luno / (exchange_rate * kraken);
-        percentage -= 1;
-        percentage *= 100;
+    public float getValrPrice() {
+        return VALR_PRICE;
+    }
 
-        // Convert to Euros
-        float euros = getCapital() / exchange_rate;
+    // Setters
+    public void setCapital(float capital){
+        this.CAPITAL = capital;
+    }
 
-        // Kraken deposit fees
-        euros -= 15.00;
+    public void setRate(float rate){
+        this.RATE = rate;
+    }
 
-        // Buy BITCOIN (with fees of 0.26%)
-        float btc = (euros * 0.9974f) / kraken;
+    public void setFees(float fees){
+        this.FEES = fees;
+    }
 
-        // Withdraw from kraken
-        btc -= 0.0005;
-        // deposit to luno
-        btc -= 0.0002;
-        // 1 % luno trade price
-        btc *= 0.99;
-        // Sell btc for rand
-        float zar = btc * luno;
-        // zar withdrawl fee
-        zar -= 8.50;
+    public void setPrices() throws Exception{
+        if (KRAKEN_PRICE == 0f) {
+            AsyncTask<String, Void, ArrayList> task = new FetchRates().execute();
+            ArrayList prices = task.get();
+            // Set the prices
+            this.KRAKEN_PRICE = (float) prices.get(0);
+            this.LUNO_PRICE = (float) prices.get(1);
+            this.VALR_PRICE = (float) prices.get(2);
+        }
+    }
 
-        zar -= get_absa_fees();
-        ArrayList data = new ArrayList();
-        //data.add(zar);
-        // Output data
-        data.add(String.format ("%.2f", kraken));
-        data.add(String.format ("%.2f", exchange_rate));
-        data.add(String.format ("%.2f", luno));
-        data.add(String.format ("%.2f", percentage));
-        float percent_gain = (((zar/getCapital())-1)*100);
-        data.add(String.format ("%.2f", percent_gain));
-        if (percent_gain >= 3)
-            data.add("GOOD");
-        else if (percent_gain >= 2)
-            data.add("OKAY");
-        else
-            data.add("BAD");
-        float profit = zar - getCapital();
-        data.add(String.format ("%.2f", profit));
-        return data;
+    public ArbResult calculate() {
+        float lunoArb = getLunoPrice() / (getRate() * getKrakenPrice());
+        lunoArb -= 1;
+        lunoArb *= 100;
+
+        float valrArb = getValrPrice() / (getRate() * getKrakenPrice());
+        valrArb -= 1;
+        valrArb *= 100;
+
+        // Convert Capital to Euros
+        float euros = getCapital() / getRate();
+
+        // Minus Kraken euro deposit fees
+        euros -= 5.00f;
+
+        // Buy BTC with Euros (fees of 0.26%)
+        float BTC = (euros * 0.9974f) / getKrakenPrice();
+
+        // Kraken BTC withdraw fees
+        BTC -= 0.0005;
+
+        // Luno : 1% trade fee
+        double lunoBtc = BTC * 0.99;
+        // VALR : 0.2% trade fee
+        double valrBtc = BTC * 0.998;
+
+        // Sell BTC for rand on Luno
+        double lunoZAR = lunoBtc * getLunoPrice();
+
+        // Sell BTC for rand on VALR
+        double valrZAR = valrBtc * getValrPrice();
+
+        // RAND withdrawl fee
+        lunoZAR -= 8.50;
+        valrZAR -= 8.50;
+
+        lunoZAR -= getFees();
+        valrZAR -= getFees();
+
+        // Final profit
+        lunoZAR -= getCapital();
+        valrZAR -= getCapital();
+
+        ArbResult result = new ArbResult(
+            getKrakenPrice(),
+            getLunoPrice(),
+            getValrPrice(),
+            lunoArb,
+            valrArb,
+            lunoZAR,
+            valrZAR
+        );
+
+        return result;
     }
 }
 

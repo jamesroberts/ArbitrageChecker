@@ -2,84 +2,88 @@ package com.jamesroberts.arbitrage.checker;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public float CAPITAL = 50000.00f;
+    // UI Elements
+    public EditText capital;
+    public EditText rate;
+    public EditText fees;
+    public Button btnSubmit;
+    public ConstraintLayout details;
+    public TextView krakenPrice;
+    public TextView lunoPrice;
+    public TextView valrPrice;
+    public TextView lunoArb;
+    public TextView valrArb;
+    public TextView lunoProfit;
+    public TextView valrProfit;
+    public ProgressBar progress;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
+        // Set up state and UI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        initializeUI();
 
-        final EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
-        Button button = (Button) findViewById(R.id.btnSubmit);
+        // Create object that will hold all details
+        final Arbitrage arb = new Arbitrage();
 
-        final Switch switchCapital = (Switch) findViewById(R.id.switchCapital);
-        switchCapital.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // Fetch prices in the background
+        details.post(new Runnable() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
-                    CAPITAL = 100000.00f;
-                } else
-                    CAPITAL = 50000.00f;
+            public void run() {
+                try {
+                    arb.setPrices();
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "There was an error fetching prices", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 try {
-                    final TextView lblChecking = (TextView) findViewById(R.id.lblChecking);
-                    lblChecking.setText("Checking...");
-                    lblChecking.post(new Runnable() {
+                    details.post(new Runnable() {
+                        @Override
                         public void run() {
                             try {
-                                EditText exchangeRate = (EditText) findViewById(R.id.etExchangeRate);
-                                float rate = Float.parseFloat(exchangeRate.getText().toString());
-                                Arbitrage arb = new Arbitrage();
-                                ArrayList result = arb.getData(rate, CAPITAL);
-                                lblChecking.setText(" ");
-                                String kraken = result.get(0).toString();
-                                String exchange_rate = result.get(1).toString();
-                                String luno = result.get(2).toString();
-                                String arb_percent = result.get(3).toString();
-                                String gain = result.get(4).toString();
-                                String estimation = result.get(5).toString();
-                                String profit = result.get(6).toString();
+                                float cap = Float.parseFloat(capital.getText().toString());
+                                arb.setCapital(cap);
 
-                                TextView lblKraken = (TextView) findViewById(R.id.lblKraken_price);
-                                lblKraken.setText("Kraken price (EUR/BTC) :          € " + kraken);
-                                TextView lblRate = (TextView) findViewById(R.id.lblExchange_rate);
-                                lblRate.setText("EUR to ZAR exchange rate:      R " + exchange_rate);
-                                TextView lblLuno = (TextView) findViewById(R.id.lblLunoPrice);
-                                lblLuno.setText("Luno price (ZAR/BTC) :             R " + luno);
-                                TextView lblPerc = (TextView) findViewById(R.id.lblArbPerc);
-                                lblPerc.setText("Arbitrage Percentage :              " + arb_percent + " %");
-                                TextView lblGain = (TextView) findViewById(R.id.lblGain);
-                                lblGain.setText("Percentage Gain after fees :    " + gain + " %");
-                                TextView lblProfit = (TextView) findViewById(R.id.lblProfit);
-                                lblProfit.setText("Estimated Profit after fees:     R " + profit);
+                                float exchangeRate = Float.parseFloat(rate.getText().toString());
+                                arb.setRate(exchangeRate);
+
+                                float exchangeFees = Float.parseFloat(fees.getText().toString());
+                                arb.setFees(exchangeFees);
+
+                                ArbResult result = arb.calculate();
+
+                                krakenPrice.setText("€ " + result.KRAKEN_PRICE);
+                                lunoPrice.setText("R " + result.LUNO_PRICE);
+                                valrPrice.setText("R " + result.VALR_PRICE);
+
+                                lunoArb.setText(result.LUNO_ARB + " %");
+                                valrArb.setText(result.VALR_ARB + " %");
+                                lunoProfit.setText("R " + result.LUNO_PROFIT);
+                                valrProfit.setText("R " + result.VALR_PROFIT);
                             } catch (Exception error){
                                 Toast.makeText(MainActivity.this, "There was an error", Toast.LENGTH_SHORT).show();
                             }
@@ -93,6 +97,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initializeUI() {
+        capital = findViewById(R.id.etCapital);
+        rate = findViewById(R.id.etFxRate);
+        fees = findViewById(R.id.etFees);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        details = findViewById(R.id.details);
+        krakenPrice = findViewById(R.id.txtKrakenPrice);
+        lunoPrice = findViewById(R.id.txtLunoPrice);
+        valrPrice = findViewById(R.id.txtVALRPrice);
+        lunoArb = findViewById(R.id.txtLunoArb);
+        valrArb = findViewById(R.id.txtVALRArb);
+        lunoProfit = findViewById(R.id.txtLunoProfit);
+        valrProfit = findViewById(R.id.txtVALRProfit);
     }
 
     @Override
