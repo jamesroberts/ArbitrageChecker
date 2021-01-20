@@ -93,16 +93,16 @@ public class Arbitrage {
         float euros = getCapital() / getRate();
 
         // Minus Kraken euro deposit fees
-        euros -= 5.00f;
+        euros -= 20.00f;
 
         // Buy BTC with Euros (fees of 0.26%)
         float BTC = (euros * 0.9974f) / getKrakenPrice();
 
         // Kraken BTC withdraw fees
-        BTC -= 0.0005;
+        BTC -= 0.00015;
 
-        // Luno : 1% trade fee
-        double lunoBtc = BTC * 0.99;
+        // Luno : 0.1% trade fee
+        double lunoBtc = BTC * 0.999;
         // VALR : 0.2% trade fee
         double valrBtc = BTC * 0.998;
 
