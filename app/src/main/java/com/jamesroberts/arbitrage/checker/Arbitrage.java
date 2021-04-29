@@ -104,7 +104,7 @@ public class Arbitrage {
         // Luno : 0.1% trade fee
         double lunoBtc = BTC * 0.999;
         // VALR : 0.2% trade fee
-        double valrBtc = BTC * 0.998;
+        double valrBtc = BTC * 0.999;
 
         // Sell BTC for rand on Luno
         double lunoZAR = lunoBtc * getLunoPrice();
